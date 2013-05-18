@@ -44,9 +44,10 @@ for module in module_list[:10]:
   module = PuppetModule(**module)
   modules.append(module)
   print u'Downloading module {full_name}...'.format(**module),
-  source_url = os.path.join(forge, module.releasefile())
+  releasefile = module.releasefile()
+  source_url = os.path.join(forge, releasefile)
   verify_directory(os.path.join(anvil, module.author))
-  destination = os.path.join(anvil, module.releasefile())
+  destination = os.path.join(anvil, releasefile)
   verify_directory(os.path.split(destination)[0])
   open(destination,'w').write(requests.get(os.path.join(forge, releasefile)).content)
   print u'complete'
