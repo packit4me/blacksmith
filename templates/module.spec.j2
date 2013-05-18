@@ -1,0 +1,35 @@
+%define module_name {{ module.name }}
+%define module_dir /usr/share/puppet/modules/%{module_name}
+
+
+Name:      puppet-module-{{author}}-%{module_name}
+Version:   {{ module.version }}
+Release:   {{ release }}
+BuildArch: noarch
+Summary:   {{ module.desc }}
+License:   GPLv3+
+URL:       {{ module.project_url }}
+Source0:   {{ module.source_url }}
+
+Requires:  puppet-server
+
+Provides: puppetmodule(%{module_name}) = %{version}
+
+%description
+{{ module.desc }}
+
+%prep
+%setup -q -c -n %{module_name}
+
+%build
+mkdir -p %{buildroot}%{module_dir}
+
+%install
+cp -pr * %{buildroot}%{module_dir}/
+
+%files
+%defattr (0644,puppet,puppet)
+%{module_dir}
+%config %{module_dir}/manifests/config.pp
+
+%changelog
