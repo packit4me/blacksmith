@@ -8,7 +8,6 @@ if __name__ == '__main__':
   modules = PuppetModules(FORGE)
 
   for module in modules[:10]:
-    modules.append(module)
     print u'Downloading module {full_name}...'.format(**module),
     module.download()
     print u'complete'
