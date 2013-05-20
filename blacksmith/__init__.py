@@ -1,9 +1,11 @@
 #!/usr/bin/python
 
 import os, json, requests
+import jinja2
 
 FORGE = u'https://forge.puppetlabs.com'
 ANVIL = u'/var/tmp/blacksmith'
+PATTERN = u'/home/xaeth/Development/blacksmith/templates/module.spec.j2'
 
 class PuppetModule(dict):
   def __init__(self, **kwargs):
@@ -15,6 +17,18 @@ class PuppetModule(dict):
   def releasefile(self):
     return u'{full_name}/{version}.tar.gz'.format(**self)
 
+  def download(self, forge=FORGE, anvil=ANVIL):
+    self.forge  = forge
+    self.anvil  = anvil
+    releasefile = self.releasefile()
+    source_url  = os.path.join(forge, releasefile)
+    verify_directory(os.path.join(anvil, self.author))
+    destination = os.path.join(anvil, releasefile)
+    verify_directory(os.path.split(destination)[0])
+    open(destination,'w').write(requests.get(os.path.join(forge, releasefile)).content)
+
+  def generate_spec(self):
+    return
 
 class PuppetModules(list):
   def get(self, key, value):
@@ -42,3 +56,4 @@ def download_module(module, forge=FORGE, anvil=ANVIL):
   destination = os.path.join(anvil, releasefile)
   verify_directory(os.path.split(destination)[0])
   open(destination,'w').write(requests.get(os.path.join(forge, releasefile)).content)
+
