@@ -4,7 +4,7 @@ import os, json, requests
 import jinja2
 
 FORGE = u'https://forge.puppetlabs.com'
-ANVIL = u'/var/tmp/blacksmith'
+ANVIL = u'/var/lib/blacksmith'
 PATTERN = u'/home/xaeth/Development/blacksmith/templates/module.spec.j2'
 
 class PuppetModule(dict):
@@ -31,6 +31,33 @@ class PuppetModule(dict):
     return
 
 class PuppetModules(list):
+  def __init__(self, base_url, use_cache=False, cache_dir=ANVIL):
+    self.base_url = base_url
+    self.cache_dir = cache_dir
+    self.cache_file = os.path.join(self.cache_dir, 'modules.json')
+    if use_cache:
+      module_list = self.read_cache()
+    else:
+      module_list = self.download_list()
+    self.parse(module_list)
+
+  def cache_list(self, module_list, cache_file=None):
+    if cache_file is None:
+      cache_file = self.cache_file
+    open(self.cache_file, 'w').write(json.dumps(module_list))
+
+  def read_cache(self):
+    return json.loads(open(self.cache_file,'r').read())
+      
+  def download_list(self, base_url=None):
+    if base_url is None:
+      base_url = self.base_url
+    return json.loads(requests.get(os.path.join(base_url, u'modules.json')).content)
+
+  def parse(self, module_list):
+    for module in module_list:
+      self.append(PuppetModule(**module))
+
   def get(self, key, value):
     found = []
     for module in self:

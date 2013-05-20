@@ -5,12 +5,9 @@ from blacksmith import *
 if __name__ == '__main__':
   verify_directory(ANVIL)
 
-  module_list = download_modules_metadata(FORGE)
+  modules = PuppetModules(FORGE)
 
-  modules = PuppetModules()
-
-  for module in module_list[:10]:
-    module = PuppetModule(**module)
+  for module in modules[:10]:
     modules.append(module)
     print u'Downloading module {full_name}...'.format(**module),
     module.download()
