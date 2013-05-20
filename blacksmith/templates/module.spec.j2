@@ -1,22 +1,22 @@
-%define module_name {{ module.name }}
+%define module_name {{ name }}
 %define module_dir /usr/share/puppet/modules/%{module_name}
 
 
 Name:      puppet-module-{{author}}-%{module_name}
-Version:   {{ module.version }}
+Version:   {{ version }}
 Release:   {{ release }}
 BuildArch: noarch
-Summary:   {{ module.desc }}
+Summary:   {{ desc }}
 License:   GPLv3+
-URL:       {{ module.project_url }}
-Source0:   {{ module.source_url }}
+URL:       {{ project_url }}
+Source0:   {{ source_url }}
 
 Requires:  puppet-server
 
 Provides: puppetmodule(%{module_name}) = %{version}
 
 %description
-{{ module.desc }}
+{{ desc }}
 
 %prep
 %setup -q -c -n %{module_name}

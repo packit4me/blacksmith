@@ -1,11 +1,13 @@
 #!/usr/bin/python
 
 import os, json, requests
-import jinja2
+from jinja2 import Environment, PackageLoader
 
 FORGE = u'https://forge.puppetlabs.com'
 ANVIL = u'/var/lib/blacksmith'
-PATTERN = u'/home/xaeth/Development/blacksmith/templates/module.spec.j2'
+TEMPLATE = u'module.spec.j2'
+PATTERN = Environment(loader=PackageLoader('blacksmith', 'templates')).get_template(TEMPLATE)
+
 
 class PuppetModule(dict):
   def __init__(self, **kwargs):
@@ -27,8 +29,12 @@ class PuppetModule(dict):
     verify_directory(os.path.split(destination)[0])
     open(destination,'w').write(requests.get(os.path.join(forge, releasefile)).content)
 
-  def generate_spec(self):
-    return
+  def render_spec(self, template=PATTERN):
+    return template.render(self)
+
+  def generate_spec(self, anvil=ANVIL):
+    destination = os.path.join(anvil, u'{full_name}/puppetmodule-{author}-{name}.spec'.format(**self))
+    open(destination, 'w').write(self.render_spec())
 
 class PuppetModules(list):
   def __init__(self, base_url, use_cache=False, cache_dir=ANVIL):
@@ -38,10 +44,10 @@ class PuppetModules(list):
     if use_cache:
       module_list = self.read_cache()
     else:
-      module_list = self.download_list()
+      module_list = self.download()
     self.parse(module_list)
 
-  def cache_list(self, module_list, cache_file=None):
+  def cache(self, module_list, cache_file=None):
     if cache_file is None:
       cache_file = self.cache_file
     open(self.cache_file, 'w').write(json.dumps(module_list))
@@ -49,7 +55,7 @@ class PuppetModules(list):
   def read_cache(self):
     return json.loads(open(self.cache_file,'r').read())
       
-  def download_list(self, base_url=None):
+  def download(self, base_url=None):
     if base_url is None:
       base_url = self.base_url
     return json.loads(requests.get(os.path.join(base_url, u'modules.json')).content)
