@@ -1,0 +1,25 @@
+blacksmith 0.1
+===============
+
+Requirements
+===============
+
+* Python modules:
+	- os
+	- sys
+	- json
+	- jinja2
+	- requests
+
+
+Installation
+===============
+
+1: copy included blacksmith file to '/usr/local/bin'
+2: chmod +x /usr/local/bin/blacksmith
+3: copy blacksmith directory to /usr/lib/python[23].*/site-packages
+
+
+How to report bugs
+===============
+Visit https://github.com/gregswift/blacksmith/issues
