@@ -3,9 +3,9 @@
 from blacksmith import *
 
 if __name__ == '__main__':
-  verify_directory(anvil)
+  verify_directory(ANVIL)
 
-  module_list = download_modules_metadata(forge)
+  module_list = download_modules_metadata(FORGE)
 
   modules = PuppetModules()
 
@@ -13,5 +13,9 @@ if __name__ == '__main__':
     module = PuppetModule(**module)
     modules.append(module)
     print u'Downloading module {full_name}...'.format(**module),
-    download_module(module)
+    module.download()
     print u'complete'
+    print u'Building spec file for module {full_name}...'.format(**module),
+    module.generate_spec()
+    print u'complete'
+    
