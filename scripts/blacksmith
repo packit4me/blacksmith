@@ -4,8 +4,9 @@ from blacksmith import *
 
 if __name__ == '__main__':
   verify_directory(ANVIL)
-
+  print u'Downloading entire module catalog from {0}...'.format(FORGE),
   modules = PuppetModules(FORGE)
+  print u'complete'
 
   for module in modules[:10]:
     print u'Downloading module {full_name}...'.format(**module),
