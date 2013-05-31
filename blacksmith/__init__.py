@@ -2,12 +2,18 @@
 
 import os, json, requests
 from jinja2 import Environment, PackageLoader
+import string
+import subprocess
 
 FORGE = u'https://forge.puppetlabs.com'
 ANVIL = u'/var/lib/blacksmith'
 TEMPLATE = u'module.spec.j2'
 PATTERN = Environment(loader=PackageLoader('blacksmith', 'templates')).get_template(TEMPLATE)
-
+BUILD = string.Template('''rpmbuild --define "_topdir $builddir" \
+--define "_builddir %{_topdir}" \
+--define "_rpmdir %{topdir}/rpms" \
+--define "_srcrpmdir %{_rpmdir}" \
+--define "_sourcedir  %{_topdir}" $specfile''')
 
 class PuppetModule(dict):
   def __init__(self, **kwargs):
@@ -29,12 +35,26 @@ class PuppetModule(dict):
     verify_directory(os.path.split(destination)[0])
     open(destination,'w').write(requests.get(os.path.join(forge, releasefile)).content)
 
+  def specfile(self):
+    return u'{full_name}/puppetmodule-{author}-{name}.spec'.format(**self)
+
   def render_spec(self, template=PATTERN):
     return template.render(self)
 
   def generate_spec(self, anvil=ANVIL):
-    destination = os.path.join(anvil, u'{full_name}/puppetmodule-{author}-{name}.spec'.format(**self))
+    destination = os.path.join(anvil, self.specfile())
     open(destination, 'w').write(self.render_spec())
+
+  def buildcommand(self, builddir, specfile, template=BUILD):
+    return template.substitute(builddir=builddir, specfile=specfile)
+
+  def build_rpm(self, anvil=ANVIL):
+    builddir = os.path.join(anvil, self.full_name)
+    verify_directory(os.path.join(builddir, 'rpms'))
+    specfile = os.path.join(anvil, self.specfile())
+    command = self.buildcommand()
+    build = subprocess.call(command)
+
 
 class PuppetModules(list):
   def __init__(self, base_url, use_cache=False, cache_dir=ANVIL):
