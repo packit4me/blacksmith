@@ -7,7 +7,7 @@ Summary:        cli ssh public key deployment utility
 
 Group:          Applications/Internet
 License:        GPLv3
-URL:            https://github.com/gregswift/blacksmith
+URL:            https://github.com/gregswift/%{name}
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -33,16 +33,22 @@ little things, like file permissions.
 
 %install
 rm -rf %{buildroot}
-%{__python} setup.py install --root=%{buildroot} --record=INSTALLED_FILES
-
+%{__python} setup.py install --root=%{buildroot}
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}
 
 %clean
 rm -rf %{buildroot}
 
 
-%files -f INSTALLED_FILES
-%defattr(755,root,root,-)
-
+%files
+%defattr(0755,root,root,-)
+%{_bindir}/%{name}
+%{python_sitelib}/%{name}-%{version}-*.egg-info
+%{python_sitelib}/%{name}/__init__.py
+%{python_sitelib}/%{name}/__init__.pyc
+%{python_sitelib}/%{name}/__init__.pyo
+%attr(0644,-,-) %{python_sitelib}/%{name}/templates/module.spec.j2
+%{_sharedstatedir}/%{name}
 
 
 %changelog
