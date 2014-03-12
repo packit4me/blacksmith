@@ -10,7 +10,7 @@ FORGE = u'https://forge.puppetlabs.com'
 ANVIL = u'/var/lib/blacksmith'
 TEMPLATE = u'module.spec.j2'
 PATTERN = Environment(loader=PackageLoader('blacksmith', 'templates')).get_template(TEMPLATE)
-BUILD = string.Template('''rpmbuild --define "_topdir $builddir" \
+RPMBUILD = string.Template('''rpmbuild --define "_topdir $builddir" \
 --define "_builddir %{_topdir}" \
 --define "_rpmdir %{_topdir}/rpms" \
 --define "_srcrpmdir %{_rpmdir}" \
@@ -56,7 +56,7 @@ class PuppetModule(dict):
     self.get_base_dir_from_tarball()
     open(destination, 'w').write(self.render_spec())
 
-  def generate_rpmbuild_command(self, builddir, specfile, template=BUILD):
+  def generate_rpmbuild_command(self, builddir, specfile, template=RPMBUILD):
     return template.substitute(builddir=builddir, specfile=specfile)
 
   def build_rpm(self, anvil=ANVIL):
