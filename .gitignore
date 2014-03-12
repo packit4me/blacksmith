@@ -3,3 +3,6 @@ blacksmith.py
 *.pyo
 MANIFEST
 dist/
+build/
+rpm-build/
+rpms/
