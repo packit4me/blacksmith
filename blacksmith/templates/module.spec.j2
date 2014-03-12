@@ -7,7 +7,7 @@ Version:   {{ version }}
 Release:   {{ release }}
 BuildArch: noarch
 Summary:   {{ desc }}
-License:   GPLv3+
+License:   TBD
 URL:       {{ project_url }}
 Source0:   {{ source_url }}
 
@@ -19,17 +19,16 @@ Provides: puppetmodule(%{module_name}) = %{version}
 {{ desc }}
 
 %prep
-%setup -q -c -n %{module_name}
+%setup -q -n {{source_dir}}
 
 %build
-mkdir -p %{buildroot}%{module_dir}
 
 %install
+mkdir -p %{buildroot}%{module_dir}
 cp -pr * %{buildroot}%{module_dir}/
 
 %files
 %defattr (0644,puppet,puppet)
 %{module_dir}
-%config %{module_dir}/manifests/config.pp
 
 %changelog

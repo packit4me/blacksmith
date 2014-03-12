@@ -15,4 +15,8 @@ if __name__ == '__main__':
     print u'Building spec file for module {full_name}...'.format(**module),
     module.generate_spec()
     print u'complete'
+    print u'Building RPM for module {full_name}...'.format(**module),
+    module.build_rpm()
+    print u'complete'
     
+

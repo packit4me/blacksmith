@@ -1,3 +1,8 @@
 blacksmith.py
 *.pyc
 *.pyo
+MANIFEST
+dist/
+build/
+rpm-build/
+rpms/
