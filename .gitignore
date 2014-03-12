@@ -1,3 +1,5 @@
 blacksmith.py
 *.pyc
 *.pyo
+MANIFEST
+dist/
